@@ -3,6 +3,7 @@ package commands
 import (
 	"example.com/bot/internal/service/product"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"log"
 )
 
 type Commander struct {
@@ -19,6 +20,12 @@ func NewCommander(productService *product.Service,
 }
 
 func (c *Commander) HandleUpdate(update tgbotapi.Update) {
+	defer func() {
+		if panicValue := recover(); panicValue != nil {
+			log.Printf("recovered from panic: %v", panicValue)
+		}
+	}()
+
 	if update.Message == nil {
 		return
 	}
